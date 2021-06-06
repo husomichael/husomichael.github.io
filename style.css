@@ -7,6 +7,8 @@ body{
     height: 100vh;
     color: #ffffff;
     background-image: url(space2.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 .wrapper{
     height: 100vw;
