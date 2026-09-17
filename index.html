@@ -218,9 +218,56 @@ footer a:hover{color:var(--accent)}
 .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 
+/* ============ lightbox ============ */
+.shot{cursor:zoom-in;transition:transform .25s,border-color .25s}
+.shot:hover{transform:scale(1.015);border-color:color-mix(in srgb,var(--accent) 50%,transparent)}
+.shot-more{
+  margin-top:.25rem;display:inline-flex;align-items:center;gap:.4rem;align-self:flex-start;
+  background:none;border:0;padding:.2rem 0;cursor:pointer;
+  font:inherit;font-size:.83rem;color:var(--ink-muted);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.shot-more:hover{color:var(--accent)}
+.shot-more svg{transition:transform .2s}
+.shot-more:hover svg{transform:translateX(3px)}
+
+.lb{
+  position:fixed;inset:0;z-index:100;display:none;
+  background:color-mix(in srgb,#07080c 88%,transparent);
+  backdrop-filter:blur(8px);
+  padding:clamp(.75rem,3vw,2.5rem);
+}
+.lb[open],.lb.open{display:grid;grid-template-rows:1fr auto;gap:.9rem}
+.lb-stage{display:grid;place-items:center;min-height:0;position:relative}
+.lb-stage img{
+  max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;
+  border-radius:10px;border:1px solid rgba(247,246,242,.14);
+  box-shadow:0 24px 70px -20px rgba(0,0,0,.8);
+  animation:lbIn .22s cubic-bezier(.22,.8,.3,1);
+}
+@keyframes lbIn{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.lb-stage img{animation:none}}
+.lb-bar{display:flex;align-items:center;justify-content:center;gap:1rem;color:#c9ccd4;font-size:.9rem}
+.lb-cap{text-align:center;max-width:46rem}
+.lb-count{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;color:#8b909c;flex:none}
+.lb-btn{
+  background:rgba(247,246,242,.07);border:1px solid rgba(247,246,242,.16);color:#f7f6f2;
+  width:2.6rem;height:2.6rem;border-radius:50%;cursor:pointer;display:grid;place-items:center;
+  transition:.18s;flex:none;
+}
+.lb-btn:hover{background:var(--accent);border-color:var(--accent);color:#171a24}
+.lb-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.lb-prev,.lb-next{position:absolute;top:50%;transform:translateY(-50%);z-index:2}
+.lb-prev{left:0}.lb-next{right:0}
+.lb-close{position:absolute;top:clamp(.75rem,3vw,2.5rem);right:clamp(.75rem,3vw,2.5rem);z-index:3}
+@media (max-width:40rem){
+  .lb-prev,.lb-next{top:auto;bottom:-3.2rem;transform:none}
+  .lb[open],.lb.open{grid-template-rows:1fr auto auto}
+}
+
 /* ============ print ============ */
 @media print{
-  nav,.cta,.hero::before,.hero::after,.contact-box::before,footer,.toggle{display:none!important}
+  nav,.cta,.hero::before,.hero::after,.contact-box::before,footer,.toggle,.lb,.shot-more{display:none!important}
   :root{--page:#fff;--card:#fff;--raised:#fff;--ink:#000;--ink-2:#1f2328;--ink-muted:#555;--rule:rgba(0,0,0,.18);--accent:#0b6544;--shadow:none}
   body{font-size:10pt;line-height:1.42}
   @page{margin:14mm 13mm}
@@ -306,8 +353,11 @@ footer a:hover{color:var(--accent)}
           </ul>
         </div>
         <div class="proj-shot">
-          <img src="img/overview.jpg" alt="The auto-log overview screen — the whole garage at once" loading="lazy" width="900">
-          <img src="img/report.jpg" alt="The buyer-facing vehicle history sheet, rendered as paper" loading="lazy" width="900">
+          <img class="shot" data-i="1" src="img/overview.jpg" alt="The auto-log overview screen — the whole garage at once" loading="lazy" width="1531" height="784">
+          <img class="shot" data-i="6" src="img/report.jpg" alt="The buyer-facing vehicle history sheet, rendered as paper" loading="lazy" width="1531" height="784">
+          <button class="shot-more" type="button" data-i="0">View all 8 screenshots
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
         </div>
       </div>
     </article>
@@ -415,6 +465,26 @@ footer a:hover{color:var(--accent)}
   </div>
 </footer>
 
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="auto-log screenshots">
+  <button class="lb-btn lb-close" id="lbClose" type="button" aria-label="Close (Esc)">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+  <div class="lb-stage">
+    <button class="lb-btn lb-prev" id="lbPrev" type="button" aria-label="Previous screenshot">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <img id="lbImg" src="" alt="">
+    <button class="lb-btn lb-next" id="lbNext" type="button" aria-label="Next screenshot">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+  <div class="lb-bar">
+    <span class="lb-count" id="lbCount"></span>
+    <span class="lb-cap" id="lbCap"></span>
+  </div>
+</div>
+
 <script>
 // theme: remember the choice, default dark (auto-log is dark-first)
 (function(){
@@ -446,6 +516,60 @@ footer a:hover{color:var(--accent)}
   },{rootMargin:'0px 0px -8% 0px',threshold:.06});
   els.forEach(function(e,i){e.style.transitionDelay=(Math.min(i,4)*55)+'ms';io.observe(e)});
 })();
+// lightbox — the full screenshot set, not just the two on the card
+(function(){
+  var shots=[
+    ['img/login.jpg','Sign in'],
+    ['img/overview.jpg','Overview — what needs doing across every car, and the running numbers'],
+    ['img/overview-spend.jpg','Spend by month, read through a category filter'],
+    ['img/vehicle-info.jpg','One vehicle — fuel economy over time, cost per fill-up, where the money went'],
+    ['img/vehicle-logs.jpg','The log — fuel-ups, service and notes in one timeline, MPG computed between fill-ups'],
+    ['img/reminders.jpg','Reminders — what each car needs, and how pressing'],
+    ['img/report.jpg','The history sheet a buyer is handed — renders as paper in both colour modes'],
+    ['img/report-excluded.png','Report controls — five records stay off the sheet, and no toggle can reveal them']
+  ];
+  var lb=document.getElementById('lb'), img=document.getElementById('lbImg'),
+      cap=document.getElementById('lbCap'), count=document.getElementById('lbCount'),
+      i=0, lastFocus=null;
+
+  // warm the neighbours so prev/next don't flash
+  function preload(n){var a=new Image();a.src=shots[(n+shots.length)%shots.length][0]}
+
+  function show(n){
+    i=(n+shots.length)%shots.length;
+    img.src=shots[i][0]; img.alt=shots[i][1];
+    cap.textContent=shots[i][1];
+    count.textContent=(i+1)+' / '+shots.length;
+    preload(i+1); preload(i-1);
+  }
+  function open(n){
+    lastFocus=document.activeElement;
+    show(n); lb.classList.add('open');
+    document.body.style.overflow='hidden';
+    document.getElementById('lbClose').focus();
+  }
+  function close(){
+    lb.classList.remove('open');
+    document.body.style.overflow='';
+    if(lastFocus&&lastFocus.focus)lastFocus.focus();
+  }
+
+  document.querySelectorAll('[data-i]').forEach(function(el){
+    el.addEventListener('click',function(){open(parseInt(el.dataset.i,10)||0)});
+  });
+  document.getElementById('lbClose').addEventListener('click',close);
+  document.getElementById('lbPrev').addEventListener('click',function(){show(i-1)});
+  document.getElementById('lbNext').addEventListener('click',function(){show(i+1)});
+  lb.addEventListener('click',function(e){if(e.target===lb||e.target.parentNode===lb&&e.target.className==='lb-stage')close()});
+  document.querySelector('.lb-stage').addEventListener('click',function(e){if(e.target===this)close()});
+  addEventListener('keydown',function(e){
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')close();
+    else if(e.key==='ArrowLeft')show(i-1);
+    else if(e.key==='ArrowRight')show(i+1);
+  });
+})();
+
 </script>
 </body>
 </html>
