@@ -59,15 +59,15 @@ nav.stuck{border-bottom-color:var(--rule)}
 .brand{font-weight:700;font-size:1.0625rem;text-decoration:none;color:var(--ink);letter-spacing:-.02em}
 .brand span{color:var(--accent)}
 .nav-links{display:flex;gap:1.6rem;align-items:center}
-.nav-links a{
+.nav-links a:not(.btn-sm){
   font-size:.9rem;color:var(--ink-2);text-decoration:none;position:relative;padding:.2rem 0;
 }
-.nav-links a::after{
+.nav-links a:not(.btn-sm)::after{
   content:"";position:absolute;left:0;right:100%;bottom:0;height:1.5px;
   background:var(--accent);transition:right .25s ease;
 }
-.nav-links a:hover{color:var(--ink)}
-.nav-links a:hover::after{right:0}
+.nav-links a:not(.btn-sm):hover{color:var(--ink)}
+.nav-links a:not(.btn-sm):hover::after{right:0}
 @media (max-width:46rem){.nav-links a:not(.btn-sm){display:none}}
 .toggle{
   background:none;border:1px solid var(--rule);color:var(--ink-2);
