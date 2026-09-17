@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Michael Huso — Software Engineer</title>
+<meta name="description" content="Michael Huso — software engineer in Kansas City. Java, Spring Boot, Vue. Camera management, payments, and property-systems integration at Quext.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛰️</text></svg>">
+<meta property="og:title" content="Michael Huso — Software Engineer">
+<meta property="og:description" content="Java, Spring Boot, Vue. Camera management, payments, and property-systems integration at Quext.">
+<meta property="og:type" content="profile">
+<style>
+:root {
+  --page:      #f5f3ee;
+  --card:      #fdfcf9;
+  --ink:       #14161a;
+  --ink-2:     #4a4e57;
+  --ink-muted: #767b85;
+  --rule:      rgba(20,22,26,0.10);
+  --accent:    #0f7d55;
+  --chip:      rgba(15,125,85,0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page:      #0d0f16;
+    --card:      #171a24;
+    --ink:       #f7f6f2;
+    --ink-2:     #b9bdc7;
+    --ink-muted: #8b909c;
+    --rule:      rgba(247,246,242,0.12);
+    --accent:    #2fc98d;
+    --chip:      rgba(47,201,141,0.10);
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sheet {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4.5rem) clamp(1.15rem, 5vw, 3rem) 4rem;
+}
+
+/* ---------- header ---------- */
+header { margin-bottom: 2.75rem; }
+h1 {
+  font-size: clamp(2rem, 6vw, 2.9rem);
+  line-height: 1.1;
+  letter-spacing: -0.022em;
+  margin: 0 0 .5rem;
+  font-weight: 640;
+}
+.role {
+  font-size: 1.0625rem;
+  color: var(--ink-2);
+  margin: 0 0 1.15rem;
+}
+.role .sep { color: var(--ink-muted); padding: 0 .45rem; }
+
+.contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem 1.15rem;
+  font-size: .9375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.contact a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color .15s;
+}
+.contact a:hover { border-bottom-color: var(--accent); }
+
+.summary {
+  margin: 1.9rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.68;
+  color: var(--ink-2);
+  max-width: 44rem;
+}
+.summary strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- sections ---------- */
+section { margin-top: 2.9rem; }
+h2 {
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-weight: 650;
+  color: var(--ink-muted);
+  margin: 0 0 1.3rem;
+  padding-bottom: .55rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ---------- entries ---------- */
+.entry { margin-bottom: 2.1rem; break-inside: avoid; }
+.entry:last-child { margin-bottom: 0; }
+
+.entry-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .15rem 1rem;
+  margin-bottom: .15rem;
+}
+.entry-head h3 {
+  font-size: 1.0625rem;
+  font-weight: 620;
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+.dates {
+  font-size: .8125rem;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.entry-sub {
+  font-size: .9375rem;
+  color: var(--ink-2);
+  margin: 0 0 .85rem;
+}
+
+ul.points { margin: 0; padding: 0; list-style: none; }
+ul.points li {
+  position: relative;
+  padding-left: 1.05rem;
+  margin-bottom: .62rem;
+  color: var(--ink-2);
+  font-size: .96875rem;
+  line-height: 1.6;
+}
+ul.points li:last-child { margin-bottom: 0; }
+ul.points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .66em;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: .55;
+}
+ul.points strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- project card ---------- */
+.project {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.35rem 1.5rem;
+}
+.project .entry-head h3 a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+}
+.project .entry-head h3 a:hover { color: var(--accent); }
+
+/* ---------- skills ---------- */
+.skills { display: grid; gap: 1.15rem; }
+.skill-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: .35rem .9rem;
+  align-items: start;
+}
+.skill-row dt {
+  font-size: .8125rem;
+  color: var(--ink-muted);
+  padding-top: .3rem;
+  letter-spacing: .01em;
+}
+.skill-row dd { margin: 0; display: flex; flex-wrap: wrap; gap: .4rem; }
+.chip {
+  font-size: .84375rem;
+  padding: .2rem .58rem;
+  border-radius: 5px;
+  background: var(--chip);
+  color: var(--ink-2);
+  border: 1px solid var(--rule);
+  white-space: nowrap;
+}
+@media (max-width: 30rem) {
+  .skill-row { grid-template-columns: 1fr; }
+  .skill-row dt { padding-top: 0; }
+}
+
+/* ---------- education ---------- */
+.edu { display: grid; gap: 1rem; }
+.edu .entry-head { margin-bottom: 0; }
+
+footer {
+  margin-top: 3.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  font-size: .84375rem;
+  color: var(--ink-muted);
+}
+footer a { color: var(--ink-muted); }
+
+/* ---------- print: a clean PDF straight from the browser ---------- */
+@media print {
+  :root {
+    --page: #ffffff; --card: #ffffff;
+    --ink: #000000; --ink-2: #1f2328; --ink-muted: #55595f;
+    --rule: rgba(0,0,0,0.16); --accent: #0b6544; --chip: transparent;
+  }
+  @page { margin: 14mm 13mm; }
+  body { font-size: 10.2pt; line-height: 1.42; }
+  .sheet { max-width: none; padding: 0; }
+  header { margin-bottom: 1.1rem; }
+  h1 { font-size: 20pt; }
+  .role, .summary { font-size: 10pt; }
+  .summary { margin-top: .7rem; line-height: 1.45; }
+  section { margin-top: 1.05rem; }
+  h2 { margin-bottom: .6rem; padding-bottom: .25rem; font-size: 8pt; }
+  .entry { margin-bottom: .85rem; }
+  ul.points li { margin-bottom: .22rem; font-size: 9.6pt; line-height: 1.4; }
+  .project { border: 1px solid var(--rule); padding: .6rem .75rem; }
+  .chip { border: none; padding: 0; }
+  .chip:not(:last-child)::after { content: " ·"; color: var(--ink-muted); }
+  .contact a { color: var(--ink-2); border: none; }
+  footer { display: none; }
+  a[href^="http"]::after { content: ""; }
+}
+</style>
+</head>
+<body>
+<main class="sheet">
+
+  <header>
+    <h1>Michael Huso</h1>
+    <p class="role">Software Engineer<span class="sep">·</span>Kansas City, MO<span class="sep">·</span>Open to remote</p>
+    <ul class="contact">
+      <li><a href="mailto:husomichael@gmail.com">husomichael@gmail.com</a></li>
+      <li><a href="https://github.com/husomichael" rel="me">github.com/husomichael</a></li>
+      <!-- LINKEDIN: <li><a href="https://www.linkedin.com/in/HANDLE" rel="me">linkedin.com/in/HANDLE</a></li> -->
+    </ul>
+
+    <p class="summary">
+      Backend-leaning full-stack engineer — <strong>Java and Spring Boot</strong> on the
+      server, <strong>Vue</strong> on the front. Four years at Quext building the platforms
+      property managers actually run their days on: camera management, resident internet
+      and billing, and the integrations that keep half a dozen third-party systems in
+      agreement. Before software, four years as a Navy Operations Specialist and five
+      carrying mail. I do my best work where the domain constraint is the interesting
+      part of the problem.
+    </p>
+  </header>
+
+  <section>
+    <h2>Experience</h2>
+
+    <div class="entry">
+      <div class="entry-head">
+        <h3>Quext <span style="font-weight:420;color:var(--ink-muted)">(formerly Homebase)</span></h3>
+        <span class="dates">Jun 2022 — Present</span>
+      </div>
+      <p class="entry-sub">Software Engineer · Kansas City, MO</p>
+      <ul class="points">
+        <li>Shipped the company's <strong>camera management platform</strong> to its first production release — a Java/Spring Boot service integrating Ring and Eagle Eye Networks, with OAuth token-refresh reliability across multiple pods, structured logging, discoverable build metadata, and all 24 public API operations documented in OpenAPI.</li>
+        <li>Built the accompanying <strong>Vue camera front end</strong>: per-community grid density and pagination preferences, support-driven Ring account linking, and correct access states on authorization failures.</li>
+        <li>Delivered the <strong>Quext Internet admin platform</strong> end to end across a Java service and a Vue SPA — SSID and community network management, subscriptions, payouts, transactions, and account history with running balances, credit memos, and invoices.</li>
+        <li>Migrated a legacy payments system to <strong>Stripe Payment Intents</strong> — recurring charges, ACH microdeposits, setup-intent webhooks, and merchant account consolidation — with no interruption to resident billing.</li>
+        <li>Integrated <strong>four property management systems</strong> (Yardi, Entrata, AppFolio, RealPage) for unit and resident synchronization, and authored an internal Eagle Eye Networks PHP SDK covering the v3 API, OAuth refresh flow, and camera, feed, and settings clients.</li>
+        <li>Built resident and guest <strong>access control services</strong> in NestJS and TypeScript, including Brivo group modeling, authorization guards on access codes, and scheduled permission-refresh jobs.</li>
+        <li>Cut list-view latency by caching network orchestrator SSID snapshots to eliminate a per-request device crawl, and converted large admin tables to server-side pagination, sorting, and filtering.</li>
+        <li>Kicked off the company's <strong>infrastructure-as-code migration</strong> — modularizing Azure resources in Terraform, importing existing resource groups, and onboarding the development team.</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head">
+        <h3>United States Postal Service</h3>
+        <span class="dates">May 2016 — Oct 2021</span>
+      </div>
+      <p class="entry-sub">Rural Letter Carrier · Kansas City, MO</p>
+      <ul class="points">
+        <li>Delivered to over 650 homes six days a week, consistently meeting service deadlines through efficient route sequencing.</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-head">
+        <h3>United States Navy</h3>
+        <span class="dates">Sep 2008 — Sep 2012</span>
+      </div>
+      <p class="entry-sub">Operations Specialist, Second Class · USS Thach, San Diego, CA</p>
+      <ul class="points">
+        <li>CIC Piloting Officer for port visits and canal transits; Track Supervisor maintaining LINK connectivity with allied warships over HF and UHF.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Selected Project</h2>
+    <div class="entry project">
+      <div class="entry-head">
+        <h3><a href="https://github.com/husomichael/auto-log">auto-log</a></h3>
+        <span class="dates">2026 — ongoing</span>
+      </div>
+      <p class="entry-sub">Spring Boot 4 · Java 21 · Vue 3 · PostgreSQL · Flyway</p>
+      <ul class="points">
+        <li>A garage and vehicle maintenance log built for a fleet of <strong>JDM imports</strong> — a constraint that drove most of the design. Odometer units are a property of the car, not a user preference, so every reading stores both what the cluster displayed and a generated miles column; cost-per-mile stays comparable across a mixed garage.</li>
+        <li>The log <strong>has two audiences</strong>. Purchase price, import duty and standing costs are private records; a buyer's history sheet is built so those are structurally excluded rather than filtered out — the disclosure boundary lives in the schema, not in a checkbox someone can forget.</li>
+        <li>Reminders are <strong>rules, not records</strong>: a rule stores no "last done" date, because one rule can cover the whole garage. The anchor is the newest linked maintenance record on that vehicle, so logging the work is what satisfies the reminder.</li>
+        <li>Split API and SPA rather than a monolith, so a planned Capacitor mobile client shares the same client-agnostic endpoints.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Skills</h2>
+    <dl class="skills">
+      <div class="skill-row">
+        <dt>Languages</dt>
+        <dd>
+          <span class="chip">Java</span><span class="chip">PHP</span><span class="chip">TypeScript</span><span class="chip">JavaScript</span><span class="chip">SQL</span><span class="chip">HTML</span><span class="chip">CSS</span>
+        </dd>
+      </div>
+      <div class="skill-row">
+        <dt>Frameworks</dt>
+        <dd>
+          <span class="chip">Spring Boot</span><span class="chip">Laravel</span><span class="chip">Vue 3</span><span class="chip">NestJS</span><span class="chip">Node</span><span class="chip">React</span>
+        </dd>
+      </div>
+      <div class="skill-row">
+        <dt>Tools &amp; Infra</dt>
+        <dd>
+          <span class="chip">PostgreSQL</span><span class="chip">MySQL</span><span class="chip">Docker</span><span class="chip">Terraform</span><span class="chip">Azure</span><span class="chip">Maven</span><span class="chip">Git</span><span class="chip">OpenAPI</span><span class="chip">Stripe</span><span class="chip">Bugsnag</span><span class="chip">Jira</span>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Education</h2>
+    <div class="edu">
+      <div class="entry">
+        <div class="entry-head">
+          <h3>Prime Digital Academy</h3>
+          <span class="dates">Sep 2021 — Feb 2022</span>
+        </div>
+        <p class="entry-sub">Full Stack Engineering Certification · Minneapolis, MN</p>
+      </div>
+      <div class="entry">
+        <div class="entry-head">
+          <h3>Johnson County Community College</h3>
+          <span class="dates">Aug 2014 — May 2016</span>
+        </div>
+        <p class="entry-sub">Computer Information Systems · Overland Park, KS</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Built by hand, no framework. <a href="https://github.com/husomichael/husomichael.github.io">Source on GitHub</a>. Print this page for a PDF copy.
+  </footer>
+
+</main>
+</body>
+</html>
