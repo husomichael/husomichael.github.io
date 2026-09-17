@@ -1,4 +1,3 @@
-/* ============ tokens — auto-log's system ============ */
 :root {
   --page:#0d0f16; --card:#171a24; --raised:#1f2330;
   --ink:#f7f6f2; --ink-2:#b9bdc7; --ink-muted:#8b909c;
@@ -32,7 +31,6 @@ a{color:var(--accent)}
 img{max-width:100%;height:auto;display:block}
 .wrap{max-width:64rem;margin:0 auto;padding:0 clamp(1.15rem,5vw,2.5rem)}
 
-/* ============ nav ============ */
 nav{
   position:sticky;top:0;z-index:50;
   background:color-mix(in srgb, var(--page) 82%, transparent);
@@ -61,7 +59,6 @@ nav.stuck{border-bottom-color:var(--rule)}
 }
 .toggle:hover{color:var(--accent);border-color:var(--accent)}
 
-/* ============ hero ============ */
 .hero{position:relative;padding:clamp(3.8rem,11vh,6.5rem) 0 clamp(2rem,4vh,3rem);overflow:hidden}
 .hero::before{
   content:"";position:absolute;inset:-40% -20% auto -20%;height:130%;pointer-events:none;
@@ -110,14 +107,12 @@ h1{font-size:clamp(2.7rem,8.5vw,5rem);line-height:1.02;font-weight:700;margin:0 
 .btn-sm{padding:.4rem .85rem;font-size:.85rem;border-radius:7px;border:1px solid var(--rule);color:var(--ink);text-decoration:none}
 .btn-sm:hover{border-color:var(--accent);color:var(--accent)}
 
-/* ============ sections ============ */
 section{padding:clamp(3.5rem,8vh,5.5rem) 0;scroll-margin-top:4.5rem}
 .sec-head{display:flex;align-items:baseline;gap:.9rem;margin-bottom:2.4rem}
 .sec-num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;color:var(--accent);letter-spacing:.04em}
 h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;margin:0}
 .sec-head .rule{flex:1;height:1px;background:var(--rule)}
 
-/* ============ project ============ */
 .proj{
   background:var(--card);border:1px solid var(--rule);border-radius:16px;
   overflow:hidden;box-shadow:var(--shadow);
@@ -148,7 +143,6 @@ h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;margin:0}
 .decisions h4{margin:0 0 .25rem;font-size:.95rem;font-weight:650;color:var(--ink);font-family:inherit;letter-spacing:0}
 .decisions p{margin:0;font-size:.925rem;color:var(--ink-2);line-height:1.6}
 
-/* ============ experience ============ */
 .job{border-top:1px solid var(--rule);padding:1.8rem 0}
 .job:first-of-type{border-top:none;padding-top:0}
 .job-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.2rem 1rem}
@@ -161,7 +155,6 @@ ul.points li::before{content:"";position:absolute;left:0;top:.62em;width:5px;hei
   background:var(--accent);opacity:.6;transform:rotate(45deg)}
 ul.points strong{color:var(--ink);font-weight:600}
 
-/* ============ stack ============ */
 .stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem}
 .stack-card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:1.3rem 1.4rem;transition:.25s}
 .stack-card:hover{border-color:color-mix(in srgb,var(--accent) 40%,transparent);transform:translateY(-2px)}
@@ -170,7 +163,6 @@ ul.points strong{color:var(--ink);font-weight:600}
 .chip{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;padding:.24rem .55rem;border-radius:6px;
   background:var(--raised);border:1px solid var(--rule);color:var(--ink-2);white-space:nowrap}
 
-/* ============ background / arc ============ */
 .arc{display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:1rem}
 .arc-card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:1.4rem;position:relative;overflow:hidden}
 .arc-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c,var(--accent))}
@@ -179,7 +171,6 @@ ul.points strong{color:var(--ink);font-weight:600}
 .arc-card .role{font-size:.9rem;color:var(--c,var(--accent));margin:0 0 .6rem;font-weight:500}
 .arc-card p{margin:0;font-size:.9rem;color:var(--ink-2);line-height:1.6}
 
-/* ============ contact ============ */
 .contact-box{
   background:var(--card);border:1px solid var(--rule);border-radius:16px;
   padding:clamp(2rem,5vw,3.2rem);text-align:center;position:relative;overflow:hidden;
@@ -193,17 +184,10 @@ ul.points strong{color:var(--ink);font-weight:600}
 .contact-box p{color:var(--ink-2);margin:0 0 1.8rem;font-size:1.03rem}
 .contact-links{display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center}
 
-footer{border-top:1px solid var(--rule);padding:1.8rem 0;font-size:.84rem;color:var(--ink-muted)}
-.foot-in{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;justify-content:space-between}
-footer a{color:var(--ink-muted);text-decoration:none}
-footer a:hover{color:var(--accent)}
-
-/* ============ reveal ============ */
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.22,.8,.3,1),transform .6s cubic-bezier(.22,.8,.3,1)}
 .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 
-/* ============ lightbox ============ */
 .shot{cursor:zoom-in;transition:transform .25s,border-color .25s}
 .shot:hover{transform:scale(1.015);border-color:color-mix(in srgb,var(--accent) 50%,transparent)}
 .shot-more{
@@ -250,9 +234,8 @@ footer a:hover{color:var(--accent)}
   .lb[open],.lb.open{grid-template-rows:1fr auto auto}
 }
 
-/* ============ print ============ */
 @media print{
-  nav,.cta,.hero::before,.hero::after,.contact-box::before,footer,.toggle,.lb,.shot-more{display:none!important}
+  nav,.cta,.hero::before,.hero::after,.contact-box::before,.toggle,.lb,.shot-more{display:none!important}
   :root{--page:#fff;--card:#fff;--raised:#fff;--ink:#000;--ink-2:#1f2328;--ink-muted:#555;--rule:rgba(0,0,0,.18);--accent:#0b6544;--shadow:none}
   body{font-size:10pt;line-height:1.42}
   @page{margin:14mm 13mm}
@@ -264,7 +247,6 @@ footer a:hover{color:var(--accent)}
   .reveal{opacity:1;transform:none}
 }
 
-/* ============ case-study cards (no screenshot) ============ */
 .cs-grid{display:grid;gap:1rem;margin-top:1rem}
 .cs-card{
   background:var(--card);border:1px solid var(--rule);border-radius:16px;
@@ -288,7 +270,6 @@ footer a:hover{color:var(--accent)}
 .cs-more svg{transition:transform .2s}
 .cs-more:hover svg{transform:translateX(3px)}
 
-/* ============ case-study page ============ */
 .cs-page{padding:clamp(2.6rem,7vh,4rem) 0 1rem;position:relative;overflow:hidden}
 .cs-page::before{
   content:"";position:absolute;inset:-60% -20% auto -20%;height:150%;pointer-events:none;
@@ -322,7 +303,6 @@ footer a:hover{color:var(--accent)}
   background:var(--raised);border:1px solid var(--rule);border-radius:5px;padding:.1em .38em;color:var(--ink);
 }
 
-/* at-a-glance */
 .glance{
   background:var(--card);border:1px solid var(--rule);border-radius:12px;
   padding:1.3rem 1.5rem;margin:0 0 2.2rem;
@@ -334,7 +314,6 @@ footer a:hover{color:var(--accent)}
 .glance dd{margin:0;color:var(--ink-2);line-height:1.6}
 @media (max-width:34rem){.glance dd{margin-bottom:.7rem}}
 
-/* tables */
 .tbl-wrap{overflow-x:auto;margin:0 0 1.5rem;border:1px solid var(--rule);border-radius:10px;background:var(--card)}
 table.tbl{border-collapse:collapse;width:100%;font-size:.9rem;min-width:30rem}
 table.tbl th,table.tbl td{text-align:left;padding:.72rem .95rem;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.6}
@@ -344,7 +323,6 @@ table.tbl tr:last-child td{border-bottom:none}
 table.tbl td{color:var(--ink-2)}
 table.tbl td strong{color:var(--ink)}
 
-/* diagram */
 .diagram{
   background:var(--raised);border:1px solid var(--rule);border-radius:10px;
   padding:1.2rem 1.3rem;margin:0 0 1.5rem;overflow-x:auto;
@@ -353,7 +331,6 @@ table.tbl td strong{color:var(--ink)}
 }
 .diagram b{color:var(--accent);font-weight:600}
 
-/* callouts */
 .cost,.sayit{border-left:2px solid;padding:.1rem 0 .1rem 1.1rem;margin:0 0 1.3rem}
 .cost{border-left-color:var(--amber)}
 .sayit{border-left-color:var(--accent)}
@@ -366,7 +343,6 @@ table.tbl td strong{color:var(--ink)}
 .cost p,.sayit p{margin:0;color:var(--ink-2);line-height:1.68}
 .sayit p{font-style:italic}
 
-/* next/prev */
 .cs-nav{border-top:1px solid var(--rule);padding:1.8rem 0 0;margin-top:1rem;
   display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center}
 .cs-nav a{font-size:.92rem;text-decoration:none;color:var(--ink-2)}

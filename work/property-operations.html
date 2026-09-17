@@ -197,7 +197,6 @@
 </div>
 
 <script>
-// theme: remember the choice, default dark — same key as the index page
 (function(){
   var root=document.documentElement, key='theme';
   var saved=localStorage.getItem(key);
@@ -209,7 +208,6 @@
   });
 })();
 
-// nav hairline once scrolled
 (function(){
   var nav=document.getElementById('nav');
   addEventListener('scroll',function(){nav.classList.toggle('stuck',scrollY>8)},{passive:true});

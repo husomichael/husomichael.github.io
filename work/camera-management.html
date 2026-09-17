@@ -199,7 +199,7 @@ adding a vendor: implement the interface + annotate. no controller change.</div>
 <ul>
   <li><strong>Rejected:</strong> a leader-election dependency, or designating a singleton pod. Both add operational surface to solve a problem the database already solves.</li>
   <li><strong>Cost:</strong> a rolling deploy mid-job can leave the lock held until the ceiling expires. That makes the ceiling a <em>correctness parameter</em>, not a tuning knob — which is exactly the kind of thing that needs writing down.</li>
-  <li><strong>The artifact:</strong> I wrote the scheduler-ownership standard as a document in the repo, so the next person adding a scheduled job follows the pattern instead of rediscovering it.</li>
+  <li><strong>What came out of it:</strong> I wrote the scheduler-ownership standard as a document in the repo, so the next person adding a scheduled job follows the pattern instead of rediscovering it.</li>
 </ul>
 
 <h2>Security in an integration</h2>
@@ -228,7 +228,6 @@ adding a vendor: implement the interface + annotate. no controller change.</div>
 </div>
 
 <script>
-// theme: remember the choice, default dark — same key as the index page
 (function(){
   var root=document.documentElement, key='theme';
   var saved=localStorage.getItem(key);
@@ -240,7 +239,6 @@ adding a vendor: implement the interface + annotate. no controller change.</div>
   });
 })();
 
-// nav hairline once scrolled
 (function(){
   var nav=document.getElementById('nav');
   addEventListener('scroll',function(){nav.classList.toggle('stuck',scrollY>8)},{passive:true});

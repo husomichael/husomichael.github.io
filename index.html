@@ -287,12 +287,6 @@
   </div>
 </section>
 
-<footer>
-  <div class="wrap foot-in">
-    <span>Built by hand — no framework, no build step.</span>
-    <span><a href="https://github.com/husomichael/husomichael.github.io">Source</a> · print this page for a PDF</span>
-  </div>
-</footer>
 
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="auto-log screenshots">
@@ -315,7 +309,6 @@
 </div>
 
 <script>
-// theme: remember the choice, default dark (auto-log is dark-first)
 (function(){
   var root=document.documentElement, key='theme';
   var saved=localStorage.getItem(key);
@@ -327,14 +320,12 @@
   });
 })();
 
-// nav hairline once scrolled
 (function(){
   var nav=document.getElementById('nav');
   var onScroll=function(){nav.classList.toggle('stuck',window.scrollY>8)};
   onScroll(); addEventListener('scroll',onScroll,{passive:true});
 })();
 
-// scroll reveal
 (function(){
   var els=document.querySelectorAll('.reveal');
   if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return}
@@ -345,7 +336,6 @@
   },{rootMargin:'0px 0px -8% 0px',threshold:.06});
   els.forEach(function(e,i){e.style.transitionDelay=(Math.min(i,4)*55)+'ms';io.observe(e)});
 })();
-// lightbox — the full screenshot set, not just the two on the card
 (function(){
   var shots=[
     ['img/login.jpg','Sign in'],
@@ -361,7 +351,6 @@
       cap=document.getElementById('lbCap'), count=document.getElementById('lbCount'),
       i=0, lastFocus=null;
 
-  // warm the neighbours so prev/next don't flash
   function preload(n){var a=new Image();a.src=shots[(n+shots.length)%shots.length][0]}
 
   function show(n){
