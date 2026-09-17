@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resident internet: accounting and adoption — Michael Huso</title>
+<meta name="description" content="The Java service behind a resident Wi-Fi product: a 30-second cache with an explicit staleness boundary, a chronological ledger built as a database view, and adoption snapshots where a missing day never reads as zero.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230d0f16'/><path d='M22 66 L42 34 L58 56 L68 42 L80 66' stroke='%232fc98d' stroke-width='9' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<meta property="og:title" content="Resident internet: accounting and adoption — Michael Huso">
+<meta property="og:description" content="Cache what you don't own, read what you do. And absence is not zero.">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="../index.html#top">michael huso<span>.</span></a>
+    <div class="nav-links">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#stack">Stack</a>
+      <a class="btn-sm" href="../index.html#contact">Get in touch</a>
+      <button class="toggle" id="themeToggle" aria-label="Toggle colour theme" title="Toggle theme">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header class="cs-page">
+  <div class="wrap">
+    <a class="back" href="../index.html#work">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      All work
+    </a>
+    <h1>Resident internet: accounting and adoption</h1>
+    <p class="proj-meta">Java 21 · Spring Boot 3.5 · Spring Data JPA · PostgreSQL · Flyway · MapStruct · Testcontainers · Vue 3</p>
+    <p class="cs-lead">
+      The service behind a resident Wi-Fi product — what plans exist, who is subscribed, what they
+      owe, what they paid, and what the property earns. This is the repository where I went from
+      writing my first Spring service to <strong>owning its accounting layer</strong>, and where I
+      design the endpoint against the screen that consumes it.
+    </p>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="prose">
+
+<dl class="glance">
+  <dt>Span</dt><dd>2025 — ongoing</dd>
+  <dt>Role</dt><dd>Feature owner across the stack — the endpoint, the migration, the tests, the API docs, and the SPA that consumes it</dd>
+  <dt>Scale</dt><dd>176 authored commits over 15 months</dd>
+  <dt>Talks to</dt><dd>A network-orchestration service, an authoritative locations API, payment processing, a resident mobile app and a staff SPA</dd>
+</dl>
+
+<h2>How I entered a stack I hadn't shipped before</h2>
+
+<p>
+  I hadn't written production Java before this. The approach was deliberate and it's the honest
+  answer to "how do you learn a new stack": a throwaway spike repo first, to make the framework's
+  shape familiar without any business logic riding on it. Then, in the real service, the
+  cross-cutting foundations — a global exception handler, structured JSON logging, and error
+  handling for the outbound clients. <strong>I made failures legible before I added features.</strong>
+  Business logic came third.
+</p>
+
+<h2>Cache what you don't own; read what you do</h2>
+
+<p>
+  Listing a property's networks meant crawling an upstream service — roughly <strong>13 sequential
+  HTTP calls</strong> for a large property — on <em>every page request</em>. The obvious fix,
+  pushing paging and sorting into SQL, was unavailable: the fields the list sorts and filters on
+  (name, type, enabled state, security type) live in the upstream service, not in our database.
+  You cannot page in SQL on fields you do not own.
+</p>
+
+<p>The fix was a per-property, 30-second, in-memory snapshot of that crawl — with a boundary drawn deliberately.</p>
+
+<div class="tbl-wrap">
+<table class="tbl">
+  <thead><tr><th>Decision</th><th>Reasoning</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Cache only the fields we don't own</strong></td>
+      <td>Every field the service owns — ids, relationships, timestamps — is read fresh from the database on each request. So list <em>membership</em> is always correct. Only display values can lag, and only by 30 seconds.</td>
+    </tr>
+    <tr>
+      <td><strong>TTL measured from crawl completion, not crawl start</strong></td>
+      <td>A multi-second crawl would otherwise eat its own lifetime, or expire the instant it finished. One commit exists purely for this.</td>
+    </tr>
+    <tr>
+      <td><strong>30 seconds, not 5 minutes</strong></td>
+      <td>Long enough to collapse a burst of page navigations into a single crawl; short enough that a staff member who renames a network sees it within one refresh.</td>
+    </tr>
+    <tr>
+      <td><strong>A read that never triggers a load</strong></td>
+      <td>Lets a caller with a cheaper path reuse a crawl someone else already paid for, without causing one itself.</td>
+    </tr>
+    <tr>
+      <td><strong>Opportunistic purge, no sweeper thread</strong></td>
+      <td>Simpler — and documented as opportunistic precisely so nobody assumes a bounded memory guarantee that isn't there.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="cost">
+  <span class="lbl">The cost, named</span>
+  <p>It's per-pod and in-memory, so N pods do N crawls, and there's no invalidation on write. Both are acceptable at this scale, and both are things I'd rather say first than be asked. A shared cache would cut the duplicate crawls at the cost of an operational dependency — a deliberate deferral, not an oversight.</p>
+</div>
+
+<div class="sayit">
+  <span class="lbl">The short version</span>
+  <p>"The list's sort and filter fields came from a vendor API, not our database, so we had to materialise the whole set to page it correctly. I cached the vendor half for 30 seconds and kept our half live — which means the list can never show a stale row, only a stale label."</p>
+</div>
+
+<h2>One ledger from three tables</h2>
+
+<p>
+  Payments, invoices and credit memos live in separate tables. The UI needed a single chronological
+  feed per property, with unit, building and resident context on every row — correctly ordered and
+  paginated <em>across</em> all three. That ordering belongs in SQL, not in application code, so it
+  became a database view: a union over the transaction types with synthetic prefixed ids, then a
+  lateral subquery that picks the single best-matching lease per transaction by date range.
+</p>
+
+<ul>
+  <li><strong>Won:</strong> one query, one sort, one pagination. The application never merges three result sets in memory and never sorts a page it assembled itself.</li>
+  <li><strong>The bug it was designed against:</strong> a location with several historical leases produced duplicate rows. The lateral pick exists specifically to collapse that.</li>
+  <li><strong>Cost:</strong> a meaningful part of the domain is now written in SQL — fast, and invisible to anyone reading only the Java. It also took four migrations to settle, which is a fair criticism: the view's column set should have been driven from the UI's actual needs in one pass rather than discovered over four.</li>
+</ul>
+
+<p>
+  <strong>The part I'd want you to notice:</strong> the first version resolved unit and building with
+  a lease-based heuristic. A commit the following day replaced it with the authoritative locations
+  API. I shipped the heuristic, saw it was wrong in principle rather than in practice, and replaced
+  it before it calcified — and naming it a heuristic in the commit is what made replacing it easy.
+</p>
+
+<h2>Absence is not zero</h2>
+
+<p>
+  Adoption — what share of occupied units bought internet — has no history in a transactional
+  schema. You can only ever compute <em>today</em>. So a scheduled job records a row each day, and
+  the interesting design work was making absence unambiguous.
+</p>
+
+<div class="tbl-wrap">
+<table class="tbl">
+  <thead><tr><th>Decision</th><th>Reasoning</th></tr></thead>
+  <tbody>
+    <tr><td><strong>A recorded snapshot, never a computed backfill</strong></td><td>Occupancy history can't be reconstructed from current state. A missing date means the job didn't run — explicitly <em>not</em> 0% adoption, and the API documentation says so in as many words.</td></tr>
+    <tr><td><strong>The job is pinned to UTC</strong></td><td>"Which day is this" must not depend on a pod's locale.</td></tr>
+    <tr><td><strong>Window derived from an injected clock</strong></td><td>Tests assert against the same clock the code reads, so nothing is flaky by time of day.</td></tr>
+    <tr><td><strong>Counts returned, never rates</strong></td><td>The client divides. Two rounded rates cannot be added; two counts can.</td></tr>
+    <tr><td><strong>The measured window is returned in the response</strong></td><td>The UI's footer names the window the number was actually measured over, rather than restating a constant that might quietly drift out of sync.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="sayit">
+  <span class="lbl">The short version</span>
+  <p>"Adoption is a point-in-time fact the schema can't reconstruct, so we record it daily. The interesting constraint was making absence unambiguous — a missing day has to read as 'no measurement', never as 'zero'."</p>
+</div>
+
+<h2>Error responses are part of the contract</h2>
+
+<p>
+  Controllers bubble into one global exception handler rather than catching locally. Payment
+  failures get a <strong>failure-type classification</strong> with its own handler and documented
+  examples, rather than collapsing into a generic 500 — so a client can branch on <em>why</em> a
+  payment failed. The API examples are pinned to the actual responses, so the docs can't drift
+  silently.
+</p>
+
+<div class="sayit">
+  <span class="lbl">The short version</span>
+  <p>"Classifying payment failures meant the mobile app could tell a declined card apart from an outage. That's a product difference, not a logging one."</p>
+</div>
+
+<h2>Smaller calls worth having ready</h2>
+
+<ul>
+  <li><strong>409, not a silent success, on deleting a plan with active subscribers.</strong> Refuse destructive operations with state attached rather than cascading.</li>
+  <li><strong>A default plan created when a network is provisioned</strong> — but only after checking one doesn't already exist. Idempotency on a side effect.</li>
+  <li><strong>One resource, one filter.</strong> Active-only and soft-delete filters on the existing subscriber endpoint rather than a second, parallel "archived" endpoint.</li>
+  <li><strong>Timestamps normalised with an explicit timezone</strong> on ingest, rather than trusting an upstream service's format.</li>
+</ul>
+
+<div class="cs-nav">
+  <a href="camera-management.html">← Multi-vendor camera management</a>
+  <a href="property-operations.html">Four years on one property-operations app →</a>
+</div>
+
+</div>
+</div>
+
+<script>
+// theme: remember the choice, default dark — same key as the index page
+(function(){
+  var root=document.documentElement, key='theme';
+  var saved=localStorage.getItem(key);
+  if(saved) root.setAttribute('data-theme',saved);
+  document.getElementById('themeToggle').addEventListener('click',function(){
+    var next=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    localStorage.setItem(key,next);
+  });
+})();
+
+// nav hairline once scrolled
+(function(){
+  var nav=document.getElementById('nav');
+  addEventListener('scroll',function(){nav.classList.toggle('stuck',scrollY>8)},{passive:true});
+})();
+</script>
+</body>
+</html>

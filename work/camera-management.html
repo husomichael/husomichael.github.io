@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-vendor camera management — Michael Huso</title>
+<meta name="description" content="A greenfield Java service putting two camera vendors with incompatible auth models behind one adapter interface — and the tenancy bug that made account binding an explicit, human-in-the-loop decision.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230d0f16'/><path d='M22 66 L42 34 L58 56 L68 42 L80 66' stroke='%232fc98d' stroke-width='9' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<meta property="og:title" content="Multi-vendor camera management — Michael Huso">
+<meta property="og:description" content="Two camera vendors whose only shared concept is 'has cameras', behind one interface.">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="../index.html#top">michael huso<span>.</span></a>
+    <div class="nav-links">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#stack">Stack</a>
+      <a class="btn-sm" href="../index.html#contact">Get in touch</a>
+      <button class="toggle" id="themeToggle" aria-label="Toggle colour theme" title="Toggle theme">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path id="themeIcon" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header class="cs-page">
+  <div class="wrap">
+    <a class="back" href="../index.html#work">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      All work
+    </a>
+    <h1>Multi-vendor camera management</h1>
+    <p class="proj-meta">Java 21 · Spring Boot 3.5 · Spring Data JPA · PostgreSQL · Flyway · OAuth 2 · WebRTC · AWS Cognito</p>
+    <p class="cs-lead">
+      A greenfield service giving one product a single camera API across two vendors whose
+      auth models have <strong>almost nothing in common</strong>. I designed it and wrote most
+      of it. Adding the second vendor required no controller changes; the interesting work was
+      deciding what the two vendors genuinely share — and what a service should refuse to infer.
+    </p>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="prose">
+
+<dl class="glance">
+  <dt>Span</dt><dd>2026 — ongoing</dd>
+  <dt>Role</dt><dd>Architect and primary author, backend and front end</dd>
+  <dt>Scale</dt><dd>67 of the repository's 171 commits; the architecture, the README and the scheduler standard are mine</dd>
+  <dt>Vendors</dt><dd>Eagle Eye Networks (OAuth 2 authorization code) and Ring (app-store linking, WebRTC)</dd>
+</dl>
+
+<h2>The constraint that shaped everything</h2>
+
+<p>
+  The two vendors are not variations on a theme. <strong>Eagle Eye</strong> is a textbook OAuth 2
+  authorization-code flow, except the API base URL is region-specific and only discoverable
+  <em>after</em> authentication. <strong>Ring</strong> is app-store linking: Ring calls us first,
+  there is no consent screen we control or redirect the user to, and live video arrives as a
+  WebRTC WHEP handshake rather than a stream URL you can put in a video element.
+</p>
+
+<p>
+  Their shared surface is close to the single sentence <em>"has cameras."</em> That was the real
+  design problem — not writing two integrations, but deciding how small the honest common
+  abstraction actually was.
+</p>
+
+<h2>The shape</h2>
+
+<p>
+  A <code>CameraVendorAdapter</code> interface plus a <code>CameraVendorRegistry</code> — Strategy
+  and Registry together. Adding a vendor means implementing the interface and annotating it as a
+  component; the registry collects every adapter the framework finds and maps it by vendor. The
+  controller never learns a vendor's name.
+</p>
+
+<div class="diagram">CameraController
+        │
+        ▼
+<b>CameraVendorRegistry</b> ─┬─▶ RingAdapter      ──▶ Ring API
+                     └─▶ EagleEyeAdapter  ──▶ Eagle Eye API
+
+resolved by vendor enum — the controller never learns a vendor name
+adding a vendor: implement the interface + annotate. no controller change.</div>
+
+<h2>A required core, and defaults for everything else</h2>
+
+<p>
+  The interface splits in two. A required core every vendor must implement — generate an auth URL,
+  redeem a code, refresh, revoke, list cameras, resolve the base URL — and <code>default</code>
+  methods for anything a vendor might simply not do.
+</p>
+
+<div class="tbl-wrap">
+<table class="tbl">
+  <thead><tr><th>Decision</th><th>Reasoning</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Required core, optional defaults</strong></td>
+      <td>The shared surface stays small and honest. A vendor without event history returns an empty list rather than being forced to fake a capability it doesn't have.</td>
+    </tr>
+    <tr>
+      <td><strong>Unsupported streaming throws, naming the vendor</strong></td>
+      <td>Fails loudly and specifically at the one place it matters, instead of returning null and becoming a mystery two layers higher.</td>
+    </tr>
+    <tr>
+      <td><strong>Base-URL resolution lives in the adapter</strong></td>
+      <td>Eagle Eye needs a per-client base URL discovered after auth; Ring's is fixed. Making it an adapter concern kept region routing out of the service layer entirely.</td>
+    </tr>
+    <tr>
+      <td><strong>Base URL passed in, not re-resolved</strong></td>
+      <td>Automated review caught a redundant round trip. An explicit parameter, one fewer HTTP call per listing.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="cost">
+  <span class="lbl">The cost, named</span>
+  <p>Six of the interface's ten methods are <code>default</code>. That ratio is fine for two vendors and a smell at four — it says the abstraction is covering two things that aren't quite the same shape. A third vendor will either fit cleanly or force a split into capability interfaces, and I'd split rather than widen the base.</p>
+</div>
+
+<h2>The design that was wrong in production</h2>
+
+<p>
+  The first version of Ring account linking inferred an account's property from the logged-in
+  session. Accounts landed on the wrong property. This is the bug I'd lead with in
+  any conversation about failure, because the fix <strong>removed an inference</strong> rather
+  than adding a check.
+</p>
+
+<p>The rewrite split linking into three explicit moments:</p>
+
+<div class="diagram">1. <b>Authenticate</b>  Ring calls our callback; tokens land in a staging
+                  table, bound to no property at all.
+
+2. <b>Claim</b>         The logged-in user's email is written onto the pending
+                  record — first writer wins — so support can see who
+                  started it. Still bound to no property.
+
+3. <b>Bind</b>          Support picks a pending record and a property.
+                  <b>This is the only step that touches the accounts table.</b></div>
+
+<p>
+  The rule is stated directly in the code's documentation: the property is decided exclusively at
+  bind time, never inferred from the ambient session — because that inference was the source of
+  accounts landing in the wrong place. Supporting details: the pending row is locked on bind and
+  consumed by id rather than flagged, the claim is atomic and null-safe, and a soft-deleted
+  account is revived only when it is genuinely the same vendor account.
+</p>
+
+<div class="cost">
+  <span class="lbl">The cost, named</span>
+  <p>A human is now in the loop on every link. It is slower on purpose, and it does not scale without eventually automating the bind. That was the right trade for correctness on a tenancy decision, and it's a known bottleneck rather than an oversight.</p>
+</div>
+
+<div class="sayit">
+  <span class="lbl">The short version</span>
+  <p>"We were inferring a tenancy decision from session context, and it silently attached customer accounts to the wrong property. The fix was to stop inferring — make the binding an explicit, auditable action, with the credentials parked unbound until someone decides."</p>
+</div>
+
+<h2>Live video without a media plane</h2>
+
+<p>
+  For Ring live video the browser creates an SDP offer, the backend forwards it to Ring's WHEP
+  endpoint, and the answer comes back so that <strong>media flows browser-to-vendor directly</strong>.
+  The service brokers the handshake and never touches the media itself.
+</p>
+
+<ul>
+  <li><strong>Won:</strong> no media servers, no bandwidth cost, no scaling problem. The backend handles a couple of small HTTP requests per viewing session.</li>
+  <li><strong>Cost:</strong> no ability to record, transcode or observe the stream, and a browser that navigates away without closing leaks a session on the vendor's side — so the lifecycle is explicit, created and closed.</li>
+  <li><strong>On the front end:</strong> a single composable owns the whole WebRTC lifecycle for both the grid tile and the detail view, with viewport gating so off-screen tiles don't hold open streams.</li>
+</ul>
+
+<div class="sayit">
+  <span class="lbl">The short version</span>
+  <p>"We broker the handshake and stay out of the media path. That's the whole reason live video costs nothing to scale, and the price is that we can't record or inspect it."</p>
+</div>
+
+<h2>Exactly-once scheduled work, without new infrastructure</h2>
+
+<p>
+  Token refresh runs nightly and must run exactly once across every running pod. Rather than add a
+  coordination dependency, the lock is a database row: insert-on-conflict-do-nothing, then a
+  conditional update that only succeeds where the existing lock has expired. The owner is hostname
+  plus a UUID, and a <em>lock-at-most-for</em> ceiling means a crashed pod's lock expires on its own.
+</p>
+
+<ul>
+  <li><strong>Rejected:</strong> a leader-election dependency, or designating a singleton pod. Both add operational surface to solve a problem the database already solves.</li>
+  <li><strong>Cost:</strong> a rolling deploy mid-job can leave the lock held until the ceiling expires. That makes the ceiling a <em>correctness parameter</em>, not a tuning knob — which is exactly the kind of thing that needs writing down.</li>
+  <li><strong>The artifact:</strong> I wrote the scheduler-ownership standard as a document in the repo, so the next person adding a scheduled job follows the pattern instead of rediscovering it.</li>
+</ul>
+
+<h2>Security in an integration</h2>
+
+<ul>
+  <li>OAuth <code>state</code> signed with HMAC-SHA256 plus a nonce — the state parameter is the CSRF defence in an OAuth flow, so it has to be <em>signed</em>, not merely random.</li>
+  <li>The callback endpoint's auth bypass narrowed to that exact path after a review round. A prefix bypass is an open door.</li>
+  <li><code>postMessage</code> origin validated against a configured origin rather than a wildcard.</li>
+  <li>Vendor tokens stored server-side and never sent to the browser.</li>
+</ul>
+
+<h2>What I'd tell you before you asked</h2>
+
+<ul>
+  <li><strong>Reading live means the vendor's uptime is our uptime.</strong> Cameras are deliberately not mirrored into our database — a minimal anchor row exists only to hang our own preferences off, and the camera list is read from the vendor every time. There's nothing to reconcile and nothing to go stale, and the price is no degraded mode.</li>
+  <li><strong>The interface is one vendor away from needing a split.</strong> See the default-method ratio above.</li>
+  <li><strong>Documentation was scoped as real work, not cleanup.</strong> All 24 public operations carry summaries, descriptions and corrected error responses, and every failure variant on the token exchange is documented. If an endpoint is reachable from the internet, its failure modes are part of its contract — that's the difference between a partner integrating in a day and filing a ticket.</li>
+</ul>
+
+<div class="cs-nav">
+  <a href="../index.html#work">← All work</a>
+  <a href="internet-billing.html">Resident internet: accounting and adoption →</a>
+</div>
+
+</div>
+</div>
+
+<script>
+// theme: remember the choice, default dark — same key as the index page
+(function(){
+  var root=document.documentElement, key='theme';
+  var saved=localStorage.getItem(key);
+  if(saved) root.setAttribute('data-theme',saved);
+  document.getElementById('themeToggle').addEventListener('click',function(){
+    var next=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    localStorage.setItem(key,next);
+  });
+})();
+
+// nav hairline once scrolled
+(function(){
+  var nav=document.getElementById('nav');
+  addEventListener('scroll',function(){nav.classList.toggle('stuck',scrollY>8)},{passive:true});
+})();
+</script>
+</body>
+</html>

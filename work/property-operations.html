@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Four years on one property-operations app — Michael Huso</title>
+<meta name="description" content="761 commits over four years on the Vue app property staff use to run a building: a hardware state machine, a Vue 2→3 migration I'd run differently, two-level feature gating, and the bug class that kept recurring.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230d0f16'/><path d='M22 66 L42 34 L58 56 L68 42 L80 66' stroke='%232fc98d' stroke-width='9' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<meta property="og:title" content="Four years on one property-operations app — Michael Huso">
+<meta property="og:description" content="The most surface area, and the most useful failure stories.">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="../index.html#top">michael huso<span>.</span></a>
+    <div class="nav-links">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#stack">Stack</a>
+      <a class="btn-sm" href="../index.html#contact">Get in touch</a>
+      <button class="toggle" id="themeToggle" aria-label="Toggle colour theme" title="Toggle theme">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header class="cs-page">
+  <div class="wrap">
+    <a class="back" href="../index.html#work">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      All work
+    </a>
+    <h1>Four years on one property-operations app</h1>
+    <p class="proj-meta">Vue 3 · TypeScript · Pinia · Vite · Vitest · Playwright · Unleash · vee-validate + Zod</p>
+    <p class="cs-lead">
+      The web app property staff use to run a building: issue and revoke access, assign key fobs,
+      configure thermostats, take payments, suspend a delinquent unit's Wi-Fi, and keep unit data in
+      sync with the system of record. <strong>761 authored commits over four years</strong> — which
+      makes it the project with the most surface area and, more usefully, the most honest failure
+      stories.
+    </p>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="prose">
+
+<dl class="glance">
+  <dt>Span</dt><dd>2022 — 2026</dd>
+  <dt>Role</dt><dd>Feature owner end to end — design file to feature flag to release, including backend routes when nobody else would add them</dd>
+  <dt>Integrations</dt><dd>Access control, thermostats, cameras, payments, and three property-management systems</dd>
+  <dt>Team</dt><dd>Small front-end team on a shared Vue app over a PHP and NestJS backend</dd>
+</dl>
+
+<h2>A state machine, because the states kept multiplying</h2>
+
+<p>
+  A USB fob scanner sits on the leasing-office desk. Staff scan an unknown key fob and the app tells
+  them whose it is. There's no push channel from the hardware, so the browser polls. The flow is a
+  modal whose entire behaviour is <strong>one status enum in a store</strong> — ready, loading,
+  assigned, available, lost, error, not-found, no-scanner-detected, plus two in-flight action states.
+  Each status renders a different child component, and every terminal state has an escape hatch that
+  opens a support chat with a pre-filled message.
+</p>
+
+<ul>
+  <li><strong>Won:</strong> impossible states became unrepresentable. Adding <em>no-scanner-detected</em> late was one enum member, one component, one branch — not an audit of boolean combinations.</li>
+  <li><strong>Cost:</strong> transitions live in the store, so reading the flow means reading the store rather than the template. A newcomer can't see the state machine from the component.</li>
+</ul>
+
+<div class="sayit">
+  <span class="lbl">The short version</span>
+  <p>"I modelled the flow as a state machine rather than a set of flags, because the states were genuinely exclusive and we kept discovering new ones. The interesting part isn't the polling — it's that the state space was discovered incrementally, and this design made each discovery additive instead of a refactor."</p>
+</div>
+
+<h3>Bounded attempts, not a wall-clock timeout</h3>
+
+<p>
+  The first version gave up after a 60-second timeout. That was replaced with polling that gives up
+  after a fixed number of attempts. The failure became deterministic and testable, and the user gets
+  a specific message instead of a hang — <strong>a wall-clock timeout races the request; an attempt
+  count doesn't, and it composes with retries.</strong> The trade is latency: with no push channel, a
+  real scan can still take up to the full poll window to appear.
+</p>
+
+<h2>The migration I'd run differently</h2>
+
+<p>
+  Roughly <strong>90 components</strong> were converted from the Options API to the Composition API,
+  alongside a move from Vuex to Pinia and Webpack to Vite. It ran as a long-lived branch over six
+  weeks while feature work continued on main. It shipped, and it was the wrong call.
+</p>
+
+<p>
+  The commit log shows the cost directly: a dense run of merges from main through two months, and
+  several features implemented twice. The alternative — an incremental migration behind the
+  framework's compatibility build, converting components as they were touched — was available.
+</p>
+
+<div class="sayit">
+  <span class="lbl">The short version</span>
+  <p>"We took the big-bang branch because the state-library and build-tool changes were hard to do halfway. It worked, but the merge tax was larger than the conversion work, and I'd push much harder for the compat-mode path now."</p>
+</div>
+
+<h2>Two levels of gating, for two different questions</h2>
+
+<p>
+  Rollout and entitlement are different questions, and they got different tools: feature flags for
+  rollout, per-building features from the backend for entitlement, and superadmin checks for anything
+  destructive. Manual Wi-Fi suspension — a feature that cuts a resident's internet — shipped behind
+  all three.
+</p>
+
+<ul>
+  <li><strong>Won:</strong> a genuinely destructive feature could ship dark, be enabled for one property, and be pulled without a deploy.</li>
+  <li><strong>Cost:</strong> two mechanisms that are easy to confuse. The resulting bug class was always identical — reading an asynchronously-resolved flag before it resolved, which renders the disabled state for a frame.</li>
+</ul>
+
+<h2>The bug class that kept recurring</h2>
+
+<p>
+  Thermostat automations could be linked to a unit or to a shared space — a gym, a clubhouse. Three
+  separate tickets in a row (spaces not being added, deletion failing, deletion of spaces failing)
+  had <strong>one root cause</strong>: two entity kinds squeezed into one list without a discriminator.
+  The fix was an explicit union type covering both.
+</p>
+
+<div class="sayit">
+  <span class="lbl">The short version</span>
+  <p>"Two things that looked alike in the UI were modelled as one thing in the code. We paid for it three times before naming the union explicitly."</p>
+</div>
+
+<p>
+  That's the same shape as the tenancy bug in the
+  <a href="camera-management.html">camera service</a>, and it's the through-line I'd point at across
+  all of this work: <strong>every serious bug in four years was something inferred that should have
+  been stated.</strong>
+</p>
+
+<h2>Correctness of time</h2>
+
+<p>
+  A thermostat schedule set for 8am must mean 8am <em>in the building</em>, not in the staff member's
+  browser. Conversion was standardised into shared utilities and applied at the display edge, and
+  appending the timezone label to displayed times ended a recurring class of support ticket.
+</p>
+
+<div class="cost">
+  <span class="lbl">The cost, named</span>
+  <p>Converting at the display edge means a wrong value can still travel through the app untouched. Normalising on ingest would have been stricter. The building's timezone is the domain timezone — we standardised the conversion but put it too late in the pipeline.</p>
+</div>
+
+<h2>Levers for support, and what they cost</h2>
+
+<p>
+  Rather than chase every sync failure with a property-management system, the app grew superadmin-only
+  escape hatches: sync now, untie a tenant link, re-sync a single unit. Support could resolve a stuck
+  property in minutes instead of filing a bug, and it shipped in days rather than a quarter.
+</p>
+
+<div class="cost">
+  <span class="lbl">The cost, named</span>
+  <p>It's a manual workaround that let the underlying sync stay unreliable, and it added a privileged code path that has to be gated correctly everywhere it appears. I'd still build the lever first — but I'd time-box it explicitly, because otherwise it quietly becomes the permanent answer.</p>
+</div>
+
+<h2>Letting integrations fail independently</h2>
+
+<p>
+  With this many third-party systems behind one screen, the important decision was blast radius. One
+  commit exists purely to let an access-control vendor's calls fail separately, because an outage at
+  that vendor was taking down the entire access view. The generalisable point: the app grew a
+  defensive layer per vendor, and independent failure was designed in rather than discovered.
+</p>
+
+<h2>The inheritance was real</h2>
+
+<p>
+  The first month was spent deleting: unused routes across fourteen service files, dead controllers,
+  directives and views in a six-year-old AngularJS app, and about <strong>twenty dependency CVEs</strong>
+  closed one commit at a time. Unglamorous, and the best possible introduction to a codebase —
+  you learn where the bodies are by carrying them out.
+</p>
+
+<div class="cs-nav">
+  <a href="internet-billing.html">← Resident internet: accounting and adoption</a>
+  <a href="../index.html#work">All work →</a>
+</div>
+
+</div>
+</div>
+
+<script>
+// theme: remember the choice, default dark — same key as the index page
+(function(){
+  var root=document.documentElement, key='theme';
+  var saved=localStorage.getItem(key);
+  if(saved) root.setAttribute('data-theme',saved);
+  document.getElementById('themeToggle').addEventListener('click',function(){
+    var next=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    localStorage.setItem(key,next);
+  });
+})();
+
+// nav hairline once scrolled
+(function(){
+  var nav=document.getElementById('nav');
+  addEventListener('scroll',function(){nav.classList.toggle('stuck',scrollY>8)},{passive:true});
+})();
+</script>
+</body>
+</html>
