@@ -44,7 +44,7 @@ body{
 }
 h1,h2,h3,.display{font-family:"Space Grotesk",ui-sans-serif,-apple-system,sans-serif;letter-spacing:-.025em;}
 a{color:var(--accent)}
-img{max-width:100%;display:block}
+img{max-width:100%;height:auto;display:block}
 .wrap{max-width:64rem;margin:0 auto;padding:0 clamp(1.15rem,5vw,2.5rem)}
 
 /* ============ nav ============ */
@@ -137,20 +137,20 @@ h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;margin:0}
   background:var(--card);border:1px solid var(--rule);border-radius:16px;
   overflow:hidden;box-shadow:var(--shadow);
 }
-.proj-top{display:grid;grid-template-columns:1.05fr .95fr;gap:0;align-items:stretch}
+.proj-top{display:grid;grid-template-columns:1fr 1.08fr;gap:0;align-items:stretch}
 @media (max-width:52rem){.proj-top{grid-template-columns:1fr}}
 .proj-copy{padding:clamp(1.6rem,3.5vw,2.4rem)}
 .proj-shot{
   position:relative;background:var(--raised);border-left:1px solid var(--rule);
   display:flex;flex-direction:column;justify-content:center;gap:1rem;
-  padding:clamp(1.2rem,2.5vw,1.8rem);min-height:15rem;
+  padding:clamp(1rem,2vw,1.35rem);min-height:15rem;
 }
 @media (max-width:52rem){.proj-shot{border-left:none;border-top:1px solid var(--rule)}}
 .proj-shot img{border-radius:9px;border:1px solid var(--rule);box-shadow:var(--shadow)}
 .proj-title{display:flex;align-items:center;gap:.7rem;margin:0 0 .3rem;font-size:1.55rem;font-weight:700}
 .proj-title a{color:inherit;text-decoration:none}
 .proj-title a:hover{color:var(--accent)}
-.proj-meta{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;color:var(--ink-muted);margin:0 0 1.2rem}
+.proj-meta{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;color:var(--ink-muted);margin:0 0 1.2rem;text-wrap:balance}
 .badge{
   font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;
   color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);
