@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,7 +20,7 @@
   <div class="wrap nav-in">
     <a class="brand" href="#top">michael huso<span>.</span></a>
     <div class="nav-links">
-      <a href="#work">Work</a>
+      <a href="#projects">Projects</a>
       <a href="#experience">Experience</a>
       <a href="#stack">Stack</a>
       <a href="#background">Background</a>
@@ -43,7 +43,7 @@
       half a dozen third-party systems agreeing about who lives where.
     </p>
     <div class="cta">
-      <a class="btn btn-primary" href="#work">See what I've built
+      <a class="btn btn-primary" href="#projects">Projects
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
       <a class="btn btn-ghost" href="#contact">Get in touch</a>
@@ -51,105 +51,9 @@
   </div>
 </header>
 
-<section id="work">
+<section id="projects">
   <div class="wrap">
-    <div class="sec-head reveal"><span class="sec-num">01</span><h2>Selected work</h2><span class="rule"></span></div>
-
-    <div class="cs-grid">
-
-      <article class="cs-card reveal">
-        <div class="cs-head">
-          <h3><a href="work/camera-management.html">Multi-vendor camera management</a></h3>
-          <span class="cs-when">2026</span>
-        </div>
-        <p class="proj-meta">Java 21 · Spring Boot 3.5 · PostgreSQL · Flyway · OAuth 2 · WebRTC</p>
-        <p class="cs-hook">
-          A greenfield service putting two camera vendors — whose auth models share almost
-          nothing — behind <strong>one adapter interface</strong>. Adding the second vendor
-          required no controller changes. Architect and primary author.
-        </p>
-        <ul class="decisions">
-          <li>
-            <h4>A required core, and defaults for everything else</h4>
-            <p>Vendors differ in what they can do at all. The required surface is only what
-            both genuinely support; optional capability fails loudly and by name rather than
-            returning null and surfacing as a mystery a layer higher.</p>
-          </li>
-          <li>
-            <h4>Tenancy is decided, never inferred</h4>
-            <p>Account linking originally read the property from the logged-in session, and
-            accounts landed on the wrong one. The rewrite parks credentials bound to nothing
-            until a human explicitly binds them. Slower on purpose.</p>
-          </li>
-        </ul>
-        <a class="cs-more" href="work/camera-management.html">Read the case study
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </article>
-
-      <article class="cs-card reveal">
-        <div class="cs-head">
-          <h3><a href="work/internet-billing.html">Resident internet: accounting and adoption</a></h3>
-          <span class="cs-when">2025 — present</span>
-        </div>
-        <p class="proj-meta">Java 21 · Spring Boot 3.5 · PostgreSQL · Flyway · Vue 3</p>
-        <p class="cs-hook">
-          The service behind a resident Wi-Fi product — what plans exist, who subscribes, what
-          they owe, and what the property earns. Where I went from writing my first Spring
-          service to <strong>owning its accounting layer</strong>.
-        </p>
-        <ul class="decisions">
-          <li>
-            <h4>Cache what you don't own; read what you do</h4>
-            <p>Listing networks meant ~13 sequential vendor calls on every page request, because
-            the sort and filter fields lived in the vendor's API. A 30-second cache of only the
-            vendor's half means the list can show a stale label, never a stale row.</p>
-          </li>
-          <li>
-            <h4>Absence is not zero</h4>
-            <p>Adoption can't be reconstructed from current state, so it's recorded daily. A
-            missing day reads as "not measured," never 0% — and the API returns counts rather
-            than rates, so the client never adds two rounded numbers.</p>
-          </li>
-        </ul>
-        <a class="cs-more" href="work/internet-billing.html">Read the case study
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </article>
-
-      <article class="cs-card reveal">
-        <div class="cs-head">
-          <h3><a href="work/property-operations.html">Four years on one property-operations app</a></h3>
-          <span class="cs-when">2022 — 2026</span>
-        </div>
-        <p class="proj-meta">Vue 3 · TypeScript · Pinia · Vite · Playwright · feature flags</p>
-        <p class="cs-hook">
-          The app property staff use to run a building: access control, key fobs, thermostats,
-          payments and unit sync. <strong>761 commits over four years</strong> — the most surface
-          area, and the most useful failure stories.
-        </p>
-        <ul class="decisions">
-          <li>
-            <h4>State machines instead of boolean flags</h4>
-            <p>A hardware fob-scanner flow with ten distinct outcomes, modelled as one status
-            enum rather than four booleans. Each newly discovered state was additive — one
-            member, one component — instead of an audit of flag combinations.</p>
-          </li>
-          <li>
-            <h4>The migration I'd run differently</h4>
-            <p>~90 components moved to Vue 3 on a six-week branch while features shipped on
-            main. It worked, and the merge tax exceeded the conversion work. I'd take the
-            compat-mode incremental path now.</p>
-          </li>
-        </ul>
-        <a class="cs-more" href="work/property-operations.html">Read the case study
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </article>
-
-    </div>
-
-
+    <div class="sec-head reveal"><span class="sec-num">01</span><h2>Projects</h2><span class="rule"></span></div>
 
     <article class="proj reveal">
       <div class="proj-top">
@@ -157,36 +61,101 @@
           <h3 class="proj-title"><a href="https://github.com/husomichael/auto-log">auto-log</a> <span class="badge">In development</span></h3>
           <p class="proj-meta">Spring Boot 4 · Java 21 · Vue 3 · PostgreSQL · Flyway</p>
           <p style="margin:0 0 1.5rem;color:var(--ink-2);font-size:.97rem;line-height:1.65">
-            A garage and vehicle maintenance log, built for my fleet of Japanese imports.
-            The import constraint drove nearly every interesting decision in it.
+            A maintenance log for people who do their own work on their cars. Keep a
+            running record of every fuel-up, service and repair across the garage — then
+            hand a buyer the whole history when it's time to sell.
           </p>
           <ul class="decisions">
             <li>
-              <h4>Odometer units belong to the car, not the user</h4>
-              <p>Five of mine read kilometres while their history is in miles. Every reading
-              stores what the cluster displayed alongside a generated miles column, so
-              cost-per-mile stays comparable across a mixed garage.</p>
+              <h4>The whole garage in one place</h4>
+              <p>Register each car, then log fuel-ups, service, repairs and modifications
+              with dates, costs, receipts and notes — all on one timeline per vehicle.</p>
             </li>
             <li>
-              <h4>The log has two audiences</h4>
-              <p>Purchase price, import duty and standing costs are private. A buyer's history
-              sheet is built so those are <em>structurally</em> excluded — the disclosure
-              boundary lives in the schema, not a checkbox someone can forget.</p>
+              <h4>Miles or kilometres, per car</h4>
+              <p>Each vehicle records the odometer in whatever unit its cluster reads.
+              Fuel economy between fill-ups, cost per mile and spend by category stay
+              comparable across a mixed garage.</p>
             </li>
             <li>
-              <h4>Reminders are rules, not records</h4>
-              <p>A rule stores no "last done" date, because one rule can cover the whole garage.
-              The anchor is the newest linked maintenance record on that vehicle — so logging
-              the work is what satisfies the reminder.</p>
+              <h4>Reminders for what's due</h4>
+              <p>Set a rule once — oil every 5,000 miles — and every car it covers shows
+              how close it is. Logging the work is what clears it.</p>
+            </li>
+            <li>
+              <h4>A history sheet for buyers</h4>
+              <p>Print or save a PDF of a vehicle's full service history, choosing what
+              goes on it: costs, modifications, fuel economy, VIN, plate. What you paid
+              for the car is never included.</p>
             </li>
           </ul>
         </div>
         <div class="proj-shot">
-          <img class="shot" data-i="1" src="img/overview.jpg" alt="The auto-log overview screen — the whole garage at once" loading="lazy" width="1531" height="784">
-          <img class="shot" data-i="6" src="img/report.jpg" alt="The buyer-facing vehicle history sheet, rendered as paper" loading="lazy" width="1531" height="784">
+          <img class="shot" data-i="1" src="img/overview.jpg" alt="The auto-log overview screen showing every vehicle in the garage" loading="lazy" width="1531" height="784">
+          <img class="shot" data-i="6" src="img/report.jpg" alt="The vehicle history sheet shown to a buyer" loading="lazy" width="1531" height="784">
           <button class="shot-more" type="button" data-i="0">View all 8 screenshots
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
+        </div>
+      </div>
+    </article>
+
+    <article class="proj reveal">
+      <div class="proj-top">
+        <div class="proj-copy">
+          <h3 class="proj-title"><a href="https://github.com/husomichael/edh-budget-brewer">edh-budget-brewer</a> <span class="badge">In development</span></h3>
+          <p class="proj-meta">Django · DRF · Python 3.13 · PostgreSQL · React</p>
+          <p style="margin:0 0 1.5rem;color:var(--ink-2);font-size:.97rem;line-height:1.65">
+            A deckbuilding tool for Magic: The Gathering Commander. Say which commander
+            you're building and how much you want to spend, and it puts together a complete,
+            legal deck that fits the budget. Command line now, web app in progress.
+          </p>
+          <ul class="decisions">
+            <li>
+              <h4>A full deck from two inputs</h4>
+              <p>Pick a commander, set a dollar amount, and all 100 cards come back —
+              lands, ramp, card draw, removal and a curve that actually works — in under
+              a second.</p>
+            </li>
+            <li>
+              <h4>Built around your commander</h4>
+              <p>Cards are chosen to match what the commander does, so a Krenko list comes
+              back full of goblins and a Muldrotha list leans on the graveyard.</p>
+            </li>
+            <li>
+              <h4>It spends what you give it</h4>
+              <p>Set $75 and the deck lands near $75, not far under. Prices come from
+              Scryfall and refresh daily.</p>
+            </li>
+            <li>
+              <h4>Paste straight into your deckbuilder</h4>
+              <p>Export a plain text list that drops into Moxfield or Archidekt, or JSON
+              if you want the raw data.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="proj-shot">
+          <pre class="term" aria-label="Example brew command and its summary output"><span class="term-cmd"><span class="term-p">$</span> manage.py brew "Krenko, Mob Boss" --budget 75</span>
+
+=== RAMP (8) ===
+  Sol Ring                        $ 1.54
+  Arcane Signet                   $ 0.49
+  Impulsive Pilferer              $ 0.46
+  <span class="term-dim">… 5 more</span>
+
+=== LANDS (36) ===
+  Command Tower                   $ 0.53
+  Den of the Bugbear              $ 1.45
+  Mountain x22                    $ 0.00
+  <span class="term-dim">… 11 more</span>
+
+Total: <span class="term-hi">$74.57 / $75.00</span> budget
+  lands  $11.25
+  spells $63.32
+Cards: 100
+Curve: 1:7  2:23  3:18  4:9  5:4  6+:2
+Scoring: commander text (thematic):
+         Goblin, tokens (tier 1)</pre>
         </div>
       </div>
     </article>
@@ -227,7 +196,7 @@
       </div>
       <div class="stack-card reveal">
         <h4>Backend</h4>
-        <div class="chips"><span class="chip">Java</span><span class="chip">Spring Boot</span><span class="chip">PHP</span><span class="chip">Laravel</span><span class="chip">NestJS</span><span class="chip">Node</span><span class="chip">OpenAPI</span></div>
+        <div class="chips"><span class="chip">Java</span><span class="chip">Spring Boot</span><span class="chip">Python</span><span class="chip">Django</span><span class="chip">DRF</span><span class="chip">PHP</span><span class="chip">Laravel</span><span class="chip">NestJS</span><span class="chip">Node</span><span class="chip">OpenAPI</span></div>
       </div>
       <div class="stack-card reveal">
         <h4>Data</h4>
@@ -339,13 +308,13 @@
 (function(){
   var shots=[
     ['img/login.jpg','Sign in'],
-    ['img/overview.jpg','Overview — what needs doing across every car, and the running numbers'],
-    ['img/overview-spend.jpg','Spend by month, read through a category filter'],
-    ['img/vehicle-info.jpg','One vehicle — fuel economy over time, cost per fill-up, where the money went'],
-    ['img/vehicle-logs.jpg','The log — fuel-ups, service and notes in one timeline, MPG computed between fill-ups'],
-    ['img/reminders.jpg','Reminders — what each car needs, and how pressing'],
-    ['img/report.jpg','The history sheet a buyer is handed — renders as paper in both colour modes'],
-    ['img/report-excluded.png','Report controls — five records stay off the sheet, and no toggle can reveal them']
+    ['img/overview.jpg','Overview — every car, what needs doing, and the running totals'],
+    ['img/overview-spend.jpg','Spend by month, filtered by category'],
+    ['img/vehicle-info.jpg','Vehicle dashboard — fuel economy over time and cost per fill-up'],
+    ['img/vehicle-logs.jpg','The log — fuel-ups, service and notes on one timeline, with MPG per fill-up'],
+    ['img/reminders.jpg','Reminders — what each car needs and how soon'],
+    ['img/report.jpg','The vehicle history sheet, ready to print or save as PDF'],
+    ['img/report-excluded.png','Choosing what goes on the history sheet']
   ];
   var lb=document.getElementById('lb'), img=document.getElementById('lbImg'),
       cap=document.getElementById('lbCap'), count=document.getElementById('lbCount'),

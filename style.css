@@ -247,114 +247,14 @@ ul.points strong{color:var(--ink);font-weight:600}
   .reveal{opacity:1;transform:none}
 }
 
-.cs-grid{display:grid;gap:1rem;margin-top:1rem}
-.cs-card{
-  background:var(--card);border:1px solid var(--rule);border-radius:16px;
-  padding:clamp(1.5rem,3.2vw,2.1rem);box-shadow:var(--shadow);
-  transition:border-color .25s,transform .25s;
+.proj + .proj{margin-top:1.1rem}
+.term{
+  margin:0;background:var(--card);border:1px solid var(--rule);border-radius:9px;
+  box-shadow:var(--shadow);padding:1.05rem 1.15rem;overflow-x:auto;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:.735rem;line-height:1.62;color:var(--ink-2);
 }
-.cs-card:hover{border-color:color-mix(in srgb,var(--accent) 38%,transparent);transform:translateY(-2px)}
-.cs-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.3rem 1rem}
-.cs-card h3{margin:0;font-size:1.3rem;font-weight:700;letter-spacing:-.018em}
-.cs-card h3 a{color:inherit;text-decoration:none}
-.cs-card h3 a:hover{color:var(--accent)}
-.cs-when{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;color:var(--ink-muted);white-space:nowrap}
-.cs-card .proj-meta{margin:.45rem 0 1rem}
-.cs-hook{margin:0 0 1.35rem;color:var(--ink-2);font-size:.97rem;line-height:1.65;max-width:46rem}
-.cs-hook strong{color:var(--ink);font-weight:600}
-.cs-more{
-  display:inline-flex;align-items:center;gap:.4rem;margin-top:1.35rem;
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.83rem;
-  color:var(--accent);text-decoration:none;
-}
-.cs-more svg{transition:transform .2s}
-.cs-more:hover svg{transform:translateX(3px)}
-
-.cs-page{padding:clamp(2.6rem,7vh,4rem) 0 1rem;position:relative;overflow:hidden}
-.cs-page::before{
-  content:"";position:absolute;inset:-60% -20% auto -20%;height:150%;pointer-events:none;
-  background:radial-gradient(45% 55% at 25% 12%,var(--glow-a),transparent 70%);
-}
-.cs-page .wrap{position:relative;z-index:1}
-.back{
-  display:inline-flex;align-items:center;gap:.45rem;margin-bottom:1.6rem;
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.83rem;
-  color:var(--ink-muted);text-decoration:none;
-}
-.back:hover{color:var(--accent)}
-.back svg{transition:transform .2s}
-.back:hover svg{transform:translateX(-3px)}
-.cs-page h1{font-size:clamp(2rem,5.5vw,3.1rem);margin:0 0 .8rem;line-height:1.06}
-.cs-page .proj-meta{font-size:.82rem;margin:0 0 1.4rem}
-.cs-lead{font-size:1.06rem;color:var(--ink-2);max-width:44rem;margin:0;line-height:1.7}
-.cs-lead strong{color:var(--ink);font-weight:600}
-
-.prose{max-width:46rem;padding-bottom:clamp(3rem,8vh,5rem)}
-.prose h2{font-size:clamp(1.35rem,3.2vw,1.72rem);margin:2.8rem 0 .9rem;scroll-margin-top:4.5rem}
-.prose h2:first-child{margin-top:0}
-.prose h3{font-size:1.1rem;font-weight:650;margin:2rem 0 .6rem;letter-spacing:-.012em}
-.prose p{color:var(--ink-2);margin:0 0 1.1rem;line-height:1.72}
-.prose strong{color:var(--ink);font-weight:600}
-.prose > ul{margin:0 0 1.2rem;padding-left:1.1rem;color:var(--ink-2);line-height:1.7}
-.prose > ul li{margin-bottom:.5rem}
-.prose > ul li::marker{color:var(--accent)}
-.prose code{
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;
-  background:var(--raised);border:1px solid var(--rule);border-radius:5px;padding:.1em .38em;color:var(--ink);
-}
-
-.glance{
-  background:var(--card);border:1px solid var(--rule);border-radius:12px;
-  padding:1.3rem 1.5rem;margin:0 0 2.2rem;
-  display:grid;grid-template-columns:auto 1fr;gap:.6rem 1.6rem;font-size:.9rem;
-}
-@media (max-width:34rem){.glance{grid-template-columns:1fr;gap:.15rem}}
-.glance dt{color:var(--ink-muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.76rem;
-  letter-spacing:.05em;text-transform:uppercase;padding-top:.15rem}
-.glance dd{margin:0;color:var(--ink-2);line-height:1.6}
-@media (max-width:34rem){.glance dd{margin-bottom:.7rem}}
-
-.tbl-wrap{overflow-x:auto;margin:0 0 1.5rem;border:1px solid var(--rule);border-radius:10px;background:var(--card)}
-table.tbl{border-collapse:collapse;width:100%;font-size:.9rem;min-width:30rem}
-table.tbl th,table.tbl td{text-align:left;padding:.72rem .95rem;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.6}
-table.tbl th{color:var(--ink);font-weight:650;font-size:.8rem;letter-spacing:.03em;text-transform:uppercase;
-  background:var(--raised);white-space:nowrap}
-table.tbl tr:last-child td{border-bottom:none}
-table.tbl td{color:var(--ink-2)}
-table.tbl td strong{color:var(--ink)}
-
-.diagram{
-  background:var(--raised);border:1px solid var(--rule);border-radius:10px;
-  padding:1.2rem 1.3rem;margin:0 0 1.5rem;overflow-x:auto;
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;line-height:1.75;
-  color:var(--ink-2);white-space:pre;
-}
-.diagram b{color:var(--accent);font-weight:600}
-
-.cost,.sayit{border-left:2px solid;padding:.1rem 0 .1rem 1.1rem;margin:0 0 1.3rem}
-.cost{border-left-color:var(--amber)}
-.sayit{border-left-color:var(--accent)}
-.cost .lbl,.sayit .lbl{
-  display:block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.3rem;
-}
-.cost .lbl{color:var(--amber)}
-.sayit .lbl{color:var(--accent)}
-.cost p,.sayit p{margin:0;color:var(--ink-2);line-height:1.68}
-.sayit p{font-style:italic}
-
-.cs-nav{border-top:1px solid var(--rule);padding:1.8rem 0 0;margin-top:1rem;
-  display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center}
-.cs-nav a{font-size:.92rem;text-decoration:none;color:var(--ink-2)}
-.cs-nav a:hover{color:var(--accent)}
-
-@media print{
-  .cs-page::before{display:none!important}
-  .cs-nav,.back{display:none!important}
-  .prose{max-width:none}
-  .diagram,.glance,.tbl-wrap{border:1px solid var(--rule);background:#fff}
-  table.tbl th{background:#f2f2f2}
-  .cs-card{border:1px solid var(--rule);box-shadow:none;break-inside:avoid}
-}
-
-.cs-grid + .proj{margin-top:1rem}
+.term-cmd{color:var(--ink);font-weight:600}
+.term-p{color:var(--accent);user-select:none}
+.term-hi{color:var(--accent);font-weight:600}
+.term-dim{color:var(--ink-muted)}
